@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/leonardomeres/timebank_backend/internal/config"
+	"github.com/leonardomeres/timebank_backend/internal/routes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -17,10 +18,14 @@ func init() {
 }
 
 func main() {
+	// Initialize database connection
 	config.InitDB()
 
+	// Create Gin router
 	r := gin.Default()
-	//TODO: Setup routes here
-	// setupRoutes(r)
+
+	// Setup routes
+	routes.SetupRoutes(r, config.DB)
+	// Run the server
 	r.Run(":8080")
 }

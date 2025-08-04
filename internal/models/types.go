@@ -5,16 +5,16 @@ import (
 )
 
 type User struct {
-	ID        uint `gorm:"primaryKey"`
-	Name      string
-	Email     string `gorm:"uniqueIndex"`
-	Password  string
-	Skills    []Skill `gorm:"foreignKey:CreatedByID"`
-	Balance   float64
-	IsActive  bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Type      string //User, Admin
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email" gorm:"unique"`
+	Password  string    `json:"password"`
+	Skills    []Skill   `gorm:"foreignKey:CreatedByID"`
+	Balance   float64   `json:"balance"`
+	IsActive  bool      `json:"is_active"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Type      string    `json:"type"` // admin, regular, etc.
 }
 
 type Skill struct {

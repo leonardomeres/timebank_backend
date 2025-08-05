@@ -31,7 +31,8 @@ func Register(c *gin.Context, db *gorm.DB) {
 	}
 
 	input.Password = string(hashedPassword)
-
+	input.IsActive = true // Default to active
+	input.Balance = 4.0   // Default balance
 	if err := db.Create(&input).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Email already registered"})
 		return

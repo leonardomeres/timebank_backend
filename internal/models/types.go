@@ -19,13 +19,19 @@ type User struct {
 
 type Skill struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
-	Name        string    `json:"name"`
-	Type        string    `json:"type"`
+	Name        string    `json:"name" gorm:"unique"`
 	Description string    `json:"description"`
+	AreaID      uint      `json:"area_id"`
+	Area        Area      `json:"area" gorm:"foreignKey:AreaID"`
+	CreatedByID uint      `json:"created_by_id"`
+	CreatedBy   User      `json:"created_by" gorm:"foreignKey:CreatedByID"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
-	CreatedByID uint      `json:"created_by_id"`
-	Creator     User      `json:"creator" gorm:"foreignKey:CreatedByID"`
+}
+
+type Area struct {
+	AreaID uint   `json:"id" gorm:"primaryKey"`
+	Name   string `json:"name" gorm:"unique"`
 }
 
 type Offer struct {

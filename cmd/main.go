@@ -19,13 +19,13 @@ func init() {
 
 func main() {
 	// Initialize database connection
-	config.InitDB()
+	db := config.InitDB()
 
 	// Create Gin router
 	r := gin.Default()
 
 	// Setup routes
-	routes.SetupRoutes(r, config.DB)
+	routes.SetupRoutes(r, db)
 	// Run the server
 	r.Run(":8080")
 }

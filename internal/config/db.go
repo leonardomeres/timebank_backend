@@ -10,9 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func InitDB() {
+func InitDB() *gorm.DB {
+	var dbgo *gorm.DB
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
@@ -27,13 +26,14 @@ func InitDB() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	DB = db
+	dbgo = db
 
-	autoMigrate()
+	autoMigrate(dbgo)
+	return dbgo
 }
 
-func autoMigrate() {
-	err := DB.AutoMigrate(
+func autoMigrate(db *gorm.DB) {
+	err := db.AutoMigrate(
 		&models.User{},
 		&models.Skill{},
 		&models.Offer{},

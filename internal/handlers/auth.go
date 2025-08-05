@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	_ "github.com/leonardomeres/timebank_backend/doc"
 	"github.com/leonardomeres/timebank_backend/internal/auth"
 	"github.com/leonardomeres/timebank_backend/internal/models"
 	"gorm.io/gorm"
@@ -16,6 +17,17 @@ type LoginInput struct {
 	Password string `json:"password"`
 }
 
+// Register godoc
+// @Summary      Register new user
+// @Description  Creates a new user account with hashed password
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        user  body  models.User  true  "User registration input"
+// @Success      201  {object}  map[string]string
+// @Failure      400  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /register [post]
 func Register(c *gin.Context, db *gorm.DB) {
 	var input models.User
 	if err := c.ShouldBindJSON(&input); err != nil {

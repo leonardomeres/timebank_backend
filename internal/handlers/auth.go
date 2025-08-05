@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	_ "github.com/leonardomeres/timebank_backend/doc"
+	_ "github.com/leonardomeres/timebank_backend/docs"
 	"github.com/leonardomeres/timebank_backend/internal/auth"
 	"github.com/leonardomeres/timebank_backend/internal/models"
 	"gorm.io/gorm"
@@ -53,6 +53,18 @@ func Register(c *gin.Context, db *gorm.DB) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
+// Login godoc
+// @Summary      User login
+// @Description  Authenticates user and returns JWT token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        login  body  LoginInput  true  "Login input"
+// @Success      200  {object}  models.LoginResponse
+// @Failure      400  {object}  map[string]string
+// @Failure      401  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /login [post]
 func Login(c *gin.Context, db *gorm.DB) {
 	var input LoginInput
 	if err := c.ShouldBindJSON(&input); err != nil {

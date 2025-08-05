@@ -17,6 +17,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 		protected.Use(middleware.AuthMiddleware())
 		{
 			protected.GET("profile", handlers.WithDB(db, handlers.GetProfile))
+			protected.POST("skills", handlers.WithDB(db, handlers.CreateSkill))
 		}
 
 	}

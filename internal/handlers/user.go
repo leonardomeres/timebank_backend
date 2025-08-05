@@ -8,6 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// GetProfile godoc
+// @Summary      Get user profile
+// @Description  Retrieves the profile of the authenticated user
+// @Tags         user
+// @Produce      json
+// @Success      200  {object}  models.User
+// @Failure      401  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Router       /profile [get]
 func GetProfile(c *gin.Context, db *gorm.DB) {
 	userID, exists := c.Get("user_id")
 	if !exists {

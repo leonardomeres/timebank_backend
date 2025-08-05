@@ -114,6 +114,31 @@ paths:
       summary: User login
       tags:
       - auth
+  /profile:
+    get:
+      description: Retrieves the profile of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user profile
+      tags:
+      - user
   /register:
     post:
       consumes:

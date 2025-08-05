@@ -2,10 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"os"
-	"time"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/leonardomeres/timebank_backend/internal/auth"
 	"github.com/leonardomeres/timebank_backend/internal/models"
 	"gorm.io/gorm"
 
@@ -60,20 +58,13 @@ func Login(c *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	// Create JWT token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": user.ID,
-		"email":   user.Email,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(), // 1 day expiry
-	})
-
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	token, err := auth.GenerateJWT(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create token", "details": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func WithDB(db *gorm.DB, handler func(*gin.Context, *gorm.DB)) gin.HandlerFunc {

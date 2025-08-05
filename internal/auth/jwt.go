@@ -5,13 +5,15 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/leonardomeres/timebank_backend/internal/models"
 )
 
 var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
-func GenerateJWT(userID uint) (string, error) {
+func GenerateJWT(user models.User) (string, error) {
 	claims := jwt.MapClaims{
-		"user_id": userID,
+		"user_id": user.ID,
+		"email":   user.Email,
 		"exp":     time.Now().Add(24 * time.Hour).Unix(), // 24h expiration
 	}
 

@@ -14,6 +14,46 @@ definitions:
       name:
         type: string
     type: object
+  models.GenericErrorResponse:
+    properties:
+      error:
+        example: Operation failed
+        type: string
+    type: object
+  models.GenericUnauthorizedResponse:
+    properties:
+      error:
+        example: Unauthorized
+        type: string
+    type: object
+  models.GetProfileResponse:
+    properties:
+      balance:
+        example: 4
+        type: number
+      email:
+        example: bob@example.com.br
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Bob
+        type: string
+      skills:
+        example:
+        - '["Programming"'
+        - ' "Design"]'
+        items:
+          type: string
+        type: array
+    type: object
+  models.LoginFailResponse:
+    properties:
+      error:
+        example: Invalid password credentials
+        type: string
+    type: object
   models.LoginResponse:
     properties:
       token:
@@ -39,6 +79,24 @@ definitions:
       name:
         type: string
       updated_at:
+        type: string
+    type: object
+  models.SkillCreationResponse:
+    properties:
+      response:
+        example: Skill created successfully
+        type: string
+    type: object
+  models.SkillExistsResponse:
+    properties:
+      error:
+        example: Skill already exists
+        type: string
+    type: object
+  models.SkillFailCreationResponse:
+    properties:
+      error:
+        example: Failed to create skill
         type: string
     type: object
   models.User:
@@ -67,6 +125,18 @@ definitions:
       updated_at:
         type: string
     type: object
+  models.UserRegistrationErrorResponse:
+    properties:
+      error:
+        example: Email already registered
+        type: string
+    type: object
+  models.UserRegistrationResponse:
+    properties:
+      message:
+        example: User created successfully
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -93,27 +163,34 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.LoginResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
         "401":
           description: Unauthorized
           schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.LoginFailResponse'
       summary: User login
       tags:
       - auth
+  /profile:
+    get:
+      description: Retrieves the profile of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetProfileResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.GenericUnauthorizedResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.GenericErrorResponse'
+      summary: Get user profile
+      tags:
+      - user
   /register:
     post:
       consumes:
@@ -132,24 +209,48 @@ paths:
         "201":
           description: Created
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.UserRegistrationResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.UserRegistrationErrorResponse'
       summary: Register new user
       tags:
       - auth
+  /skills:
+    post:
+      consumes:
+      - application/json
+      description: Allows authenticated users to create a new skill
+      parameters:
+      - description: Skill creation input
+        in: body
+        name: skill
+        required: true
+        schema:
+          $ref: '#/definitions/models.Skill'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SkillCreationResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.GenericUnauthorizedResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.SkillExistsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.SkillFailCreationResponse'
+      summary: Create a new skill
+      tags:
+      - user
 schemes:
 - http
 swagger: "2.0"

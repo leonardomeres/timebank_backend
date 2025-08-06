@@ -13,9 +13,9 @@ import (
 // @Description  Retrieves the profile of the authenticated user
 // @Tags         user
 // @Produce      json
-// @Success      200  {object}  models.User
-// @Failure      401  {object}  map[string]string
-// @Failure      404  {object}  map[string]string
+// @Success      200  {object}  models.GetProfileResponse
+// @Failure      401  {object}  models.GenericUnauthorizedResponse
+// @Failure      500  {object}  models.GenericErrorResponse
 // @Router       /profile [get]
 func GetProfile(c *gin.Context, db *gorm.DB) {
 	userID, exists := c.Get("user_id")
@@ -39,6 +39,18 @@ func GetProfile(c *gin.Context, db *gorm.DB) {
 	})
 }
 
+// CreateSkill godoc
+// @Summary      Create a new skill
+// @Description  Allows authenticated users to create a new skill
+// @Tags         user
+// @Accept       json
+// @Produce      json
+// @Param        skill  body  models.Skill  true  "Skill creation input"
+// @Success      201  {object}  models.SkillCreationResponse
+// @Failure      401  {object}  models.GenericUnauthorizedResponse
+// @Failure      409  {object}  models.SkillExistsResponse
+// @Failure      500  {object}  models.SkillFailCreationResponse
+// @Router       /skills [post]
 func CreateSkill(c *gin.Context, db *gorm.DB) {
 	var input models.Skill
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -77,13 +89,13 @@ func CreateSkill(c *gin.Context, db *gorm.DB) {
 
 	if err := db.Create(&skill).Error; err != nil {
 		if err.Error() == "ERROR: duplicate key value violates unique constraint \"uni_skills_name\" (SQLSTATE 23505)" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Skill already exists"})
+			c.JSON(http.StatusConflict, gin.H{"error": "Skill already exists"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create skill"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Skill created successfully", "skill": skill})
+	c.JSON(http.StatusCreated, gin.H{"message": "Skill created successfully"})
 
 }

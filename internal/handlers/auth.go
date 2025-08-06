@@ -24,9 +24,8 @@ type LoginInput struct {
 // @Accept       json
 // @Produce      json
 // @Param        user  body  models.User  true  "User registration input"
-// @Success      201  {object}  map[string]string
-// @Failure      400  {object}  map[string]string
-// @Failure      500  {object}  map[string]string
+// @Success      201  {object}  models.UserRegistrationResponse
+// @Failure      400  {object}  models.UserRegistrationErrorResponse
 // @Router       /register [post]
 func Register(c *gin.Context, db *gorm.DB) {
 	var input models.User
@@ -61,9 +60,7 @@ func Register(c *gin.Context, db *gorm.DB) {
 // @Produce      json
 // @Param        login  body  LoginInput  true  "Login input"
 // @Success      200  {object}  models.LoginResponse
-// @Failure      400  {object}  map[string]string
-// @Failure      401  {object}  map[string]string
-// @Failure      500  {object}  map[string]string
+// @Failure      401  {object}  models.LoginFailResponse
 // @Router       /login [post]
 func Login(c *gin.Context, db *gorm.DB) {
 	var input LoginInput

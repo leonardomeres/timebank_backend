@@ -1,0 +1,65 @@
+Table users {
+  id uint [pk]
+  name varchar
+  email varchar [unique]
+  password varchar
+  balance float
+  is_active boolean
+  created_at datetime
+  updated_at datetime
+  type varchar
+}
+
+Table areas {
+  area_id uint [pk]
+  name varchar [unique]
+}
+
+Table skills {
+  id uint [pk]
+  name varchar [unique]
+  description varchar
+  area_id uint
+  created_by_id uint
+  created_at datetime
+  updated_at datetime
+}
+
+Table offers {
+  id uint [pk]
+  title varchar
+  description varchar
+  time_amount float
+  provider_id uint
+  skill_id uint
+  is_request boolean
+  created_at datetime
+  updated_at datetime
+}
+
+Table transactions {
+  id uint [pk]
+  from_user_id uint
+  to_user_id uint
+  skill_id uint
+  offer_id uint
+  time_amount float
+  timestamp datetime
+  status varchar
+  created_at datetime
+  updated_at datetime
+  finished_at datetime [null]
+  rating float [null]
+  comment text [null]
+}
+
+Ref: skills.area_id > areas.area_id
+Ref: skills.created_by_id > users.id
+
+Ref: offers.provider_id > users.id
+Ref: offers.skill_id > skills.id
+
+Ref: transactions.from_user_id > users.id
+Ref: transactions.to_user_id > users.id
+Ref: transactions.skill_id > skills.id
+Ref: transactions.offer_id > offers.id

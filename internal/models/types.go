@@ -5,16 +5,28 @@ import (
 )
 
 type User struct {
-	ID        uint      `json:"id" gorm:"primaryKey"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email" gorm:"unique"`
-	Password  string    `json:"password"`
-	Skills    []Skill   `json:"skills" gorm:"foreignKey:CreatedByID"`
-	Balance   float64   `json:"balance"`
-	IsActive  bool      `json:"is_active"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Type      string    `json:"type"` // admin, user, etc.
+	ID        uint       `json:"id" gorm:"primaryKey"`
+	Name      string     `json:"name"`
+	Email     string     `json:"email" gorm:"unique"`
+	Password  string     `json:"password"`
+	Skills    []Skill    `json:"skills" gorm:"foreignKey:CreatedByID"`
+	Balance   float64    `json:"balance"`
+	IsActive  bool       `json:"is_active"`
+	Type      string     `json:"type"` // admin, user, etc.
+	TimeBanks []TimeBank `json:"time_banks" gorm:"many2many:time_bank_users;"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+}
+
+type TimeBank struct {
+	ID          uint      `gorm:"primaryKey" json:"id"`
+	Name        string    `gorm:"unique;not null" json:"name"`
+	Description string    `json:"description"`
+	CreatedByID uint      `json:"created_by_id"`
+	CreatedBy   User      `json:"created_by" gorm:"foreignKey:CreatedByID"`
+	Members     []User    `json:"members" gorm:"many2many:time_bank_users;"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 type Skill struct {
@@ -43,6 +55,9 @@ type Offer struct {
 	Provider    User      `json:"provider" gorm:"foreignKey:ProviderID"`
 	SkillID     uint      `json:"skill_id"`
 	Skill       Skill     `json:"skill" gorm:"foreignKey:SkillID"`
+	TimeBankID  uint      `json:"time_bank_id"`
+	TimeBank    TimeBank  `json:"time_bank" gorm:"foreignKey:TimeBankID"`
+	IsActive    bool      `json:"is_active"`
 	IsRequest   bool      `json:"is_request"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
@@ -58,6 +73,8 @@ type Transaction struct {
 	Skill      Skill      `json:"skill" gorm:"foreignKey:SkillID"`
 	OfferID    uint       `json:"offer_id"`
 	Offer      Offer      `json:"offer" gorm:"foreignKey:OfferID"`
+	TimeBankID uint       `json:"time_bank_id"`
+	TimeBank   TimeBank   `json:"time_bank" gorm:"foreignKey:TimeBankID"`
 	TimeAmount float64    `json:"time_amount"`
 	Timestamp  time.Time  `json:"timestamp"`
 	Status     string     `json:"status"`

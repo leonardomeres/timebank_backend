@@ -5,9 +5,9 @@ Table users {
   password varchar
   balance float
   is_active boolean
+  type varchar
   created_at datetime
   updated_at datetime
-  type varchar
 }
 
 Table areas {
@@ -25,6 +25,15 @@ Table skills {
   updated_at datetime
 }
 
+Table time_banks {
+  id uint [pk]
+  name varchar [unique]
+  description varchar
+  created_by_id uint
+  created_at datetime
+  updated_at datetime
+}
+
 Table offers {
   id uint [pk]
   title varchar
@@ -32,6 +41,8 @@ Table offers {
   time_amount float
   provider_id uint
   skill_id uint
+  time_bank_id uint
+  is_active boolean
   is_request boolean
   created_at datetime
   updated_at datetime
@@ -43,6 +54,7 @@ Table transactions {
   to_user_id uint
   skill_id uint
   offer_id uint
+  time_bank_id uint
   time_amount float
   timestamp datetime
   status varchar
@@ -53,13 +65,23 @@ Table transactions {
   comment text [null]
 }
 
+Table time_bank_users {
+  user_id uint [ref: > users.id]
+  time_bank_id uint [ref: > time_banks.id]
+  Note: "Join table for many-to-many relation between users and time_banks"
+}
+
 Ref: skills.area_id > areas.area_id
 Ref: skills.created_by_id > users.id
 
+Ref: time_banks.created_by_id > users.id
+
 Ref: offers.provider_id > users.id
 Ref: offers.skill_id > skills.id
+Ref: offers.time_bank_id > time_banks.id
 
 Ref: transactions.from_user_id > users.id
 Ref: transactions.to_user_id > users.id
 Ref: transactions.skill_id > skills.id
 Ref: transactions.offer_id > offers.id
+Ref: transactions.time_bank_id > time_banks.id

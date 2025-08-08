@@ -18,6 +18,8 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 		{
 			protected.GET("profile", handlers.WithDB(db, handlers.GetProfile))
 			protected.POST("skills", handlers.WithDB(db, handlers.CreateSkill))
+			protected.POST("banks", handlers.WithDB(db, handlers.TimeBankHandler))
+			protected.GET("banks", handlers.WithDB(db, handlers.TimeBankHandler))
 		}
 
 	}
